@@ -18,6 +18,9 @@ const createUrl = async function (req, res) {
         // DATA  VALIDATION
         if (!isValid(requestBody.longUrl))
             return res.status(400).send({ status: false, message: "Enter Url in LongUrl key" });
+        //   URL  VALIDATION 
+        if (!validUrl.isUri(requestBody.longUrl))
+            return res.status(400).send({ status: false, message: "Enter valid url" })
 
         // URL  SHORTENING 
         requestBody.urlCode = nanoId.nanoid(); //  URL CODE CREATION
