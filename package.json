@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/DheeruBhai2000/Project-4.git"
   },
-  "author": "",
+  "author": "Dheeraj kumar",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/DheeruBhai2000/Project-4/issues"
@@ -24,7 +24,6 @@
     "nanoid": "^3.3.4",
     "nodemon": "^2.0.16",
     "redis": "^3.1.2",
-    "util": "^0.12.4",
-    "valid-url": "^1.0.9"
+    "util": "^0.12.4"
   }
 }
