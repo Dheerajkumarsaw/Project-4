@@ -90,8 +90,6 @@ const getUrl = async function (req, res) {
     try {
         const requestBody = req.params.urlCode;
 
-        // if (Object.keys(requestBody).length === 0)
-        //     return res.status(400).send({ status: false.valueOf, message: "Enter Urlcode in params" });
         //  cache  existance checcking 
         const cacheUrl = await GET_ASYNC(`${requestBody}`);
         if (cacheUrl) {
