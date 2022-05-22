@@ -65,7 +65,7 @@ const createUrl = async function (req, res) {
             const existUrl = await urlModel.findOne({ longUrl: requestBody.longUrl }).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 });
             if (existUrl) {
                 await SET_ASYNC(`${requestBody.longUrl}`, JSON.stringify(data(existUrl)));
-                return res.status(200).send({ status: true, message: "Allready Created Coming From Cache", data: data(existUrl) })
+                return res.status(200).send({ status: true, message: "Allready Created Coming From DB", data: data(existUrl) })
             }
         };
 
@@ -90,8 +90,8 @@ const getUrl = async function (req, res) {
     try {
         const requestBody = req.params.urlCode;
 
-        if (Object.keys(requestBody).length === 0)
-            return res.status(400).send({ status: false.valueOf, message: "Enter Urlcode in params" });
+        // if (Object.keys(requestBody).length === 0)
+        //     return res.status(400).send({ status: false.valueOf, message: "Enter Urlcode in params" });
         //  cache  existance checcking 
         const cacheUrl = await GET_ASYNC(`${requestBody}`);
         if (cacheUrl) {
