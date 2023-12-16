@@ -1,13 +1,17 @@
 const express = require("express");
+const cors = require("cors")
+require("dotenv").config()
 const bodyParser = require("body-parser");
 const route = require("./route/router");
 const mongoose = require("mongoose");
 const app = express();
 
+app.use(cors())
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect("mongodb+srv://dheerubhai2000:gqG*2JVkTEt5T*G@cluster0.hk6qb.mongodb.net/group1Database-url", {
+mongoose.connect(process.env.DB, {
     useNewUrlParser: true
 })
     .then(() => console.log("MongoDB is Connected"))
@@ -15,6 +19,6 @@ mongoose.connect("mongodb+srv://dheerubhai2000:gqG*2JVkTEt5T*G@cluster0.hk6qb.mo
 
 app.use("/", route)
 
-app.listen(process.env.PORT || 3000, function () {
-    console.log("Express app is Running on port " + (process.env.PORT || 3000))
+app.listen(process.env.PORT, function () {
+    console.log("Express app is Running on port " + (process.env.PORT))
 });
