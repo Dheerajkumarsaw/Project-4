@@ -8,14 +8,14 @@ const isValid = function (value) {
     if (typeof value === "string" && value.trim().length == 0) return false
     return true
 };
-//  ====================   REDISLAB   CONNECTION   ========================================
+//  ====================   REDIS LAB   CONNECTION   ========================================
 //Connect to redis
 const redisClient = redis.createClient(
-    18167,
-    "redis-18167.c212.ap-south-1-1.ec2.cloud.redislabs.com",
+    19385,
+    "redis-19385.c301.ap-south-1-1.ec2.cloud.redislabs.com",
     { no_ready_check: true }
 );
-redisClient.auth("a9a8JWjTaMvy4sAp00Cgdr4fw3Rut0yA", function (err) {
+redisClient.auth("jt3WzgGY6Lb7hYPaToX6u8Mx77ek2X5y", function (err) {
     if (err) throw err;
 });
 
@@ -38,14 +38,13 @@ const createUrl = async function (req, res) {
         //  IF  BODY EMPTY
         if (Object.keys(requestBody).length == 0)
             return res.status(400).send({ status: false, message: "Enter Data in Body" });
-
         // DATA  VALIDATION
         if (!isValid(requestBody.longUrl))
             return res.status(400).send({ status: false, message: "Enter Url in LongUrl key" });
 
         //  REGEX  FOR URL  VALIDATION
-        let regx = /^(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})?$/;
-        if (!regx.test(requestBody.longUrl)) {
+        let regX = /^(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})?$/;
+        if (!regX.test(requestBody.longUrl)) {
             return res.status(400).send({ status: false, message: "Enter valid url" })
         };
         //  FUNCTION  FOR  MAKING  RESPONSE
@@ -56,23 +55,23 @@ const createUrl = async function (req, res) {
                 urlCode: value.urlCode
             }
         };
-        //  CHECKING  EXISTANCE  IN  CACHE
+        //  CHECKING  EXISTENCE  IN  CACHE
         let cacheUrl = await GET_ASYNC(`${requestBody.longUrl}`);
         if (cacheUrl) {
-            return res.status(200).send({ status: true, message: "Allready Created Coming From Cache", data: JSON.parse(cacheUrl) })
+            return res.status(200).send({ status: true, message: "Already Created Coming From Cache", data: JSON.parse(cacheUrl) })
         } else {
-            //  IF ALL THING ALLREADY EXIST  FOR SAME URL
+            //  IF ALL THING ALREADY EXIST  FOR SAME URL
             const existUrl = await urlModel.findOne({ longUrl: requestBody.longUrl }).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 });
             if (existUrl) {
                 await SET_ASYNC(`${requestBody.longUrl}`, JSON.stringify(data(existUrl)));
-                return res.status(200).send({ status: true, message: "Allready Created Coming From DB", data: data(existUrl) })
+                return res.status(200).send({ status: true, message: "Already Created Coming From DB", data: data(existUrl) })
             }
         };
 
         //  ======================   URL  SHORTENING   ===========================
 
         requestBody.urlCode = nanoId.nanoid(); //  URL CODE CREATION
-        requestBody.shortUrl = "http://localhost:3000/" + requestBody.urlCode; // URL  SHORTING  CONCATINAION  
+        requestBody.shortUrl = "http://localhost:4000/" + requestBody.urlCode; // URL  SHORTING  CONCATINAION  
         //  document creation in DB
         const urlCreated = await urlModel.create(requestBody);
         await SET_ASYNC(`${requestBody.longUrl}`, JSON.stringify(data(urlCreated)));
@@ -90,7 +89,7 @@ const getUrl = async function (req, res) {
     try {
         const requestBody = req.params.urlCode;
 
-        //  cache  existance checcking 
+        //  cache  existence checking 
         const cacheUrl = await GET_ASYNC(`${requestBody}`);
         if (cacheUrl) {
             res.status(302).redirect(JSON.parse(cacheUrl));
